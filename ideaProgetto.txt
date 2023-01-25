@@ -1,0 +1,16 @@
+
+## Idea Progetto
+
+1.
+Descrizione: prendere i titoli delle notizie da news.google.com,
+	     e trovare le parole più usate.
+
+
+2.
+Descrizione: prendere i titoli dei libri da goodreads.com,
+	     trovare i titoli/parole più usati.
+
+3.
+Descrizione: prendere i metadati delle immagini di un profilo (twitter/instagram),
+	     geolocalizzare le immagini su una mappa,
+	     trovare posti più visitati.
