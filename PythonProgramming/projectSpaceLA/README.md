@@ -1,35 +1,34 @@
-# 
+# Project SpaceLA
 - - - -
 ## 📒 Table of Contents
-* [📍 Overview](#-overview)
+* [💡 Overview](#-overview)
 * [⚙️ Features](#-features)
-* [📂 Project Structure](#project-structure)
-* [🧩 Modules](#modules)
+* [📂 Project Structure](#-project-structure)
 * [🚀 Getting Started](#-getting-started)
-* [🗺 Roadmap](#-roadmap)
+* [⚠️ Known Issues](#-known-issues)
 * [🤝 Contributing](#-contributing)
 * [📄 License](#-license)
 * [👏 Acknowledgments](#-acknowledgments)
 
 - - - -
-## 💡 Overview 
-Il Progetto SpaceLA, dove LA significa SpaceLaunches, è stato il mio esame finale del corso di Python Programming, del corso di ML & AI presso l’ITS Angelo Rizzoli.
+## 💡 Overview
+The SpaceLA Project, where LA stands for SpaceLaunches, was my final exam for the Python Programming course and the ML & AI course at VET Angelo Rizzoli.
 
-L’esame consisteva nello sviluppo di un programma in python che avesse le seguente caratteristiche:
+The exam involved developing a Python program with the following features:
 
-1. web scraping con Beautiful Soup
-2. analisi dati con Pandas, e opzionalmente Numpy
-3. visualizzazione dei dati di output
+1. Web scraping using Beautiful Soup
+2. Data analysis with Pandas, and optionally Numpy
+3. Visualization of the output data
 
-Nel mio caso mi sono divertito ad analizzare i dati dei lanci spaziali da wikipedia (https://en.wikipedia.org/wiki/Timeline_of_spaceflight) [link](https://en.wikipedia.org/wiki/Timeline_of_spaceflight).
+In my case, I enjoyed analyzing space launch data from [Wikipedia](https://en.wikipedia.org/wiki/Timeline_of_spaceflight).
 
 - - - -
 ## ⚙️ Features
-Nel dettaglio, il programma permette di scegliere un anno dal 1951 ad oggi e di visualizzare alcune statistiche:
+In detail, the program allows you to choose a year from 1951 to the present and view some statistics:
 
-* numero di lanci di quell’anno
-* funzione dei lanci (ad esempio: Missile Test, Aeronomy, Biological, … )
-* esito dei lanci (successful, failure, partial failure)
+* Number of launches for that year
+* Types of launches (for example: Missile Test, Aeronomy, Biological, ...)
+* Outcomes of launches (successful, failure, partial failure)
 
 - - - -
 ## 📂 Project Structure
@@ -44,7 +43,7 @@ repo
 1 directory, 4 files
 ```
 
-Il notebook jupyter`ProjectSpaceLA.ipynb` è comodo per visualizzare gli output del programma a ogni operazione; inoltre, è stato utile a scopo di presentazione del progetto.
+The Jupyter notebook `ProjectSpaceLA.ipynb` is convenient for viewing the program's outputs after each operation. Additionally, it was useful for the purpose of presenting the project.
 
 - - - -
 ## 🚀 Getting Started
@@ -52,21 +51,22 @@ Il notebook jupyter`ProjectSpaceLA.ipynb` è comodo per visualizzare gli output 
 
 1. Clone the repository:
 ```sh
-git clone
+git clone https://github.com/enaikey00/School-Stuff.git
 ```
 
 2. Change to the project directory:
 ```sh
-cd
+cd School-Stuff/PythonProgramming/projectSpaceLA
 ```
 
 ### 🎮 Use
-1. Run the `main.py` script
+Run the `main.py` script
 ```sh
 python main.py
 ```
+or
 
-2. Run with `Jupyter Lab`
+Run with `Jupyter Lab`
 ```sh
 jupyter-lab # inside the project directory
 ```
@@ -110,6 +110,6 @@ This project is licensed under the `MIT` License. See the [LICENSE](https://docs
 - - - -
 ## 👏 Acknowledgments
 
-> * `ℹ️  List any resources, contributors, inspiration, etc.`  
+> Inspiration: my passion for space
 
 - - - -
