@@ -8,7 +8,7 @@
 <h1 align="center">School Stuff</h1>
 
 <p align="center">
-  <img alt="Github top language" src="https://img.shields.io/github/languages/top/enaikey00/>School-Stuff?color=56BEB8">
+  <img alt="Github top language" src="https://img.shields.io/github/languages/top/enaikey00/School-Stuff?color=56BEB8">
 
   <img alt="Github language count" src="https://img.shields.io/github/languages/count/enaikey00/School-Stuff?color=56BEB8">
 
@@ -32,9 +32,9 @@
 <hr> -->
 
 <p align="center">
-  <a href="#dart-about">About</a> &#xa0; | &#xa0; 
+  <a href="#bulb-about">About</a> &#xa0; | &#xa0; 
   <a href="#sparkles-features">Features</a> &#xa0; | &#xa0;
-  <a href="#rocket-technologies">Technologies</a> &#xa0; | &#xa0;
+  <a href="#gear-technologies">Technologies</a> &#xa0; | &#xa0;
   <a href="#white_check_mark-requirements">Requirements</a> &#xa0; | &#xa0;
   <a href="#checkered_flag-starting">Starting</a> &#xa0; | &#xa0;
   <a href="#memo-license">License</a> &#xa0; | &#xa0;
@@ -42,19 +42,11 @@
   
 </p>
 
-* [💡 About](#-about)
-* [⚙️ Features](#-features)
-* [📂 Project Structure](#project-structure)
-* [🚀 Getting Started](#-getting-started)
-* [🤝 Contributing](#-contributing)
-* [📄 License](#-license)
-* [👏 Acknowledgments](#-acknowledgments)
-
 <br>
 
 This repository aims to keep track of school-related projects.
 
-## About
+## :bulb: About
 It includes work from different classes: 
 * Python Programming
 * noSQL Database (Redis, Mongodb, Neo4j)
@@ -62,3 +54,5 @@ It includes work from different classes:
 * Data Vizualization
 * Machine Learning Supervised
 * Design Thinking
+
+## :gear: Technologies
