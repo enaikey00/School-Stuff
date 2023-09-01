@@ -1,0 +1,729 @@
+---
+title: "Il benessere degli europei: un'analisi sul rapporto tra la famiglia e la felicità."
+author: "Gruppo 5: Ballabio, Carobene, Barbazza, Villani"
+date: "2023-06-19"
+output:
+  html_document:
+    
+    toc: yes
+    toc_float: yes
+    toc_depth: 3
+    number_sections: false
+    
+    df_print: kable 
+
+    theme: readable   
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style>
+  #div{
+    background-color: #f2f2f2;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  #span {
+  color: #ff0000;
+  }
+  blockquote {
+    border-left: 4px solid grey;
+    color: black;
+    background-color: rgba(0, 0, 0, 0.0.1);
+    padding-left: 10px;
+  }
+  blockquote blockquote {
+    border-left: 4px solid orange;
+    background-color: rgba(255, 165, 0, 0.1);
+    color: black;
+    padding-left: 10px;
+  }
+</style>
+
+## Titolo
+
+> L'importanza della famiglia nel benessere quotidiano, inteso in termini di felicità e soddisfazione percepita.
+
+
+
+## Obiettivi e Metodologia
+
+### 1. Domanda di ricerca ed obiettivi
+> É importante avere una famiglia per poter raggiungere la felicità?
+
+La ricerca si propone di esplorare l'**importanza** della **famiglia** nel raggiungimento della **felicità** e in generale di una vita piena e soddisfacente.
+
+Saranno presi in considerazione **diversi fattori** correlati, come la qualità del tempo speso in famiglia, l'importanza data agli amici, il tempo libero e altri aspetti sociali.
+
+### 2. Fonte dati
+I dati per questa ricerca verranno ricavati dall'*European Social Survey*.
+
+### 3. Paesi analizzati
+La ricerca si concentrerà su un'ampia gamma di paesi europei, ad **eccezione** dei seguenti:
+Kosovo, Lettonia, Lussemburgo, Montenegro, Macedonia del Nord, Romania, Serbia, Turchia, Israele. Di questi ultimi i dati sono troppo scarsi.
+
+### 4. Range temporale
+L'unico anno che presenta abbastanza dati per un'analisi è il 2018.
+
+### 5. Le ipotesi
+
+**H1** La presenza di una famiglia è considerata un elemento importante per raggiungere la felicità.
+
+
+a. L'importanza della famiglia è correlata alla felicità.
+b. L'importanza della famiglia è correlata alla soddisfazione nella vita percepita.
+  
+## Il Dataset 
+### Creazione
+> Selezione variabili e Filtro sulle osservazioni
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+# per la lettura di file.csv di grandi dimensioni
+library(data.table)
+
+# percorso dataset
+file_csv <- "/Users/NicolòBallabio/OneDrive - ITS Angelo Rizzoli/Documenti/Corsi Attivi/R/Lezione 3 -- 10.5/Dataset progetto/ESS-Data-Wizard-subset-2023-05-07.csv"
+
+# variabile da usare poi come filtro; 
+# contiene solo le variabili di interesse
+old_names <- c('cntry', 'proddate', 'gndr', 'impfml', 'prrfmly', 'fmlenj', 
+               'fmlstrs', 'stflife','impfrds', 'implsrt', 'imppol', 
+               'imprlg', 'impvo', 'impwrk', 'happy')
+
+# lettura dataset con fread() di data.table
+dati <- fread(file_csv, select = old_names)
+
+# nuovi nomi per le variabili
+new_names <- c('Country', 'Production_Date', 'Gender', 'Family_Importance', 'Family_Main_Priority_Life',
+               'Family_Time_Enjoyable', 'Family_Time_Stressful', 'Life_Satisfaction',
+               'Friends_Importance', 'Leisure_Time_Importance',  
+               'Politics_Importance', 'Religion_Importance','Volunteering_Importance', 'Work_Importance',                'Happiness')
+# cambio nome
+setnames(dati, old = old_names, new = new_names)
+
+# stampa su file
+output_csv <- getwd()
+# dati grezzi (variabili numeriche) per analisi con la media
+dati_raw <- dati
+```
+
+
+### Presentazione
+> Quante e quali sono le variabili incluse nel dataset? Cosa rappresentano? Quali valori
+possono assumere le variabili? Che tipo di variabili sono?
+
+Le variabili selezionate per l'analisi sono quelle relative alla famiglia:
+```{r echo=TRUE}
+names(dati)
+```
+Sono variabili categoriche:
+```{r message=FALSE, warning=FALSE}
+str(dati)
+```
+
+
+## Elaborazione dei Dati 
+
+### 1. Verifica di consistenza dei dati e correzione delle inconsistenze
+
+Sono presenti dei valori anomali?
+
+Formattazione valori mancanti
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Formattazione valori mancanti
+# install.packages("sjmisc")
+library(sjmisc)
+
+dati <- set_na(dati, na = c("", "55", "77", "88", "99"))
+```
+Quanti Nan per variabile
+```{r}
+# Numero di valori mancanti per variabile
+missing_values <- colSums(is.na(dati))
+print(missing_values)
+
+# oppure 
+# apply(dati, 2, function(x) sum(is.na(x)))
+```
+Percentuale Nan per Variabile
+```{r}
+# Percentuale di missing values per variabile
+missing_percent <- colSums(is.na(dati)) / nrow(dati) * 100
+
+# Nomi delle variabili
+variable_names <- colnames(dati)
+
+# Combina i nomi delle variabili con le percentuali formattate
+formatted_output <- paste(variable_names, sprintf("%.2f%%", missing_percent), sep = ": ")
+
+print(formatted_output)
+```
+Con ggplot2
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# install.packages("ggplot2")
+library(ggplot2)
+# Creazione del dataframe con i nomi delle variabili e le percentuali
+data <- data.frame(variable = colnames(dati), missing_percent = missing_percent)
+
+# Creazione del grafico a barre
+ggplot(data, aes(x = missing_percent,
+                 y = reorder(variable, missing_percent), 
+                 fill = missing_percent)) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "blue", high = "steelblue") +
+  labs(x = "Percentuale di Missing Values", y = "Variabile") +
+  ggtitle("Percentuale di Missing Values per Variabile")
+
+```
+
+Percentuale di Missing Values nel Dataset
+```{r}
+# Percentuale di missing values per variabile
+missing_percent <- sprintf("%.2f%%", 
+                           total_missing_percent <- sum(colSums(is.na(dati))) / (nrow(dati) * ncol(dati)) * 100)
+# Formattazione dell'output
+# formatted_percent <- sprintf("%.2f%%", missing_percent)
+print(missing_percent)
+
+```
+
+Sono presenti dei valori anomali? Come gestirli per evitare che pregiudichino i risultati delle
+analisi?
+
+Esempio: cerchiamo i valori univoci della variabile Happiness
+```{r}
+# valori unici della variabile categorica
+unique_values <- unique(dati$Happiness)
+print(unique_values)
+```
+Controllo Valori Anomali in tutte le variabili, iterando sulle colonne
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+# vettore di controllo
+control_vector <- c( "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 
+                     "Extremely happy",
+                     "Extremely unhappy", 
+                     "Extremely Important",
+                     "Extremely Uninmportant", NA)
+
+
+
+dati_wo_country <- select(dati, -Country, -Production_Date)
+column_names <- names(dati_wo_country)
+#print(column_names)
+
+# Itera su ogni colonna
+for (column_name in column_names) {
+  # valori unici della colonna corrente
+  unique_values <- unique(dati[[column_name]])
+
+  # Controlla se c'è almeno un valore unico non presente nel vettore di controllo
+  anomaly_detected <- any(!unique_values %in% control_vector)
+
+  # Stampa il nome della colonna e il risultato del controllo
+  #print(paste("Colonna:", column_name, "- Anomalia rilevata:", anomaly_detected))
+
+
+  anomalies <- unique_values[!unique_values %in% control_vector]
+
+
+  if (length(anomalies) > 0) {
+    print(paste("Colonna:", column_name, "- Anomalia rilevata: TRUE"))
+    print("Valori anomali:")
+    print(anomalies)
+  } else {
+    
+    # print(paste("Colonna:", column_name, "- Anomalia rilevata: FALSE"))
+  }
+
+}
+```
+
+
+### 2. Trasformazione dei dati
+
+> Rinominare le variabili attribuendo nomi di facile intuizione, ricodifica delle variabili
+
+Ricodifica variabile *Country*
+```{r}
+library(dplyr)
+
+dati <- mutate(
+  dati,
+  Country = recode(Country,
+                     
+  "AL" = "Albania",
+  "AT" = "Austria",
+  "BE" = "Belgium",
+  "BG" = "Bulgaria",
+  "CH" = "Switzerland",
+  "CY" = "Cyprus",
+  "CZ" = "Czechia",
+  "DE" = "Germany",
+  "DK" = "Denmark",
+  "EE" = "Estonia",
+  "ES" = "Spain",
+  "FI" = "Finland",
+  "FR" = "France",
+  "GB" = "United Kingdom",
+  "GE" = "Georgia",
+  "GR" = "Greece",
+  "HR" = "Croatia",
+  "HU" = "Hungary",
+  "IE" = "Ireland",
+  "IS" = "Iceland",
+  "IL" = "Israel",
+  "IT" = "Italy",
+  "LT" = "Lithuania",
+  "LU" = "Luxembourg",
+  "LV" = "Latvia",
+  "ME" = "Montenegro",
+  "MK" = "North Macedonia",
+  "NL" = "Netherlands",
+  "NO" = "Norway",
+  "PL" = "Poland",
+  "PT" = "Portugal",
+  "RO" = "Romania",
+  "RS" = "Serbia",
+  "RU" = "Russian Federation",
+  "SE" = "Sweden",
+  "SI" = "Slovenia",
+  "SK" = "Slovakia",
+  "TR" = "Turkey",
+  "UA" = "Ukraine",
+  "XK" = "Kosovo",
+  .default= NA_character_)
+  )
+```
+
+Ricodifica variabile *Family Importance*
+```{r}
+# library(dplyr)
+
+dati$Family_Importance <- ifelse(dati$Family_Importance %in% c("0", "1", "2"), "1. Very Unimportant", 
+                          ifelse(dati$Family_Importance %in% c("3", "4"), "2. Unimportant",
+                          ifelse(dati$Family_Importance %in% c("5", "6"), "3. Neutral",
+                          ifelse(dati$Family_Importance %in% c("7", "8"), "4. Important",
+                          ifelse(dati$Family_Importance %in% c("9", "10"), "5. Very Important",
+                          NA_character_ )))))
+# table(dati$Family_Importance)
+```
+
+Ricodifica variabile *Gender*
+```{r}
+library(dplyr)
+
+dati <- mutate(
+  dati,
+  Gender = recode(Gender, 
+                  "1" = "Male",    #valore attuale = valore nuovo
+                  "2" = "Female",
+                  .default= NA_character_) #tutti i valori non classificati, considerati NA
+  )
+```
+Ricodifica variabile *Family Main Priority Life*
+```{r}
+dati <- mutate(
+  dati,
+  Family_Main_Priority_Life = recode(Family_Main_Priority_Life, 
+                "1"	= "Agree strongly",
+                "2"	= "Agree",
+                "3"	= "Neutral",
+                "4"	= "Disagree",
+                "5"	= "Disagree strongly",
+                  .default= NA_character_) #tutti i valori non classificati, considerati NA
+  )
+```
+Ricodifica variabile *Family Time Enjoyable*
+```{r}
+dati$Family_Time_Enjoyable <- ifelse(dati$Family_Time_Enjoyable %in% c("0"), "1. Never", 
+                          ifelse(dati$Family_Time_Enjoyable %in% c("1", "2"), "2. Rarely",
+                          ifelse(dati$Family_Time_Enjoyable %in% c("3"), "3. Neutral",
+                          ifelse(dati$Family_Time_Enjoyable %in% c("4", "5"), "4. Often",
+                          ifelse(dati$Family_Time_Enjoyable %in% c("6"), "5. All of the time",
+                          NA_character_ )))))
+```
+Ricodifica variabile *Family Time Stressful*
+```{r}
+dati$Family_Time_Stressful <- ifelse(dati$Family_Time_Stressful %in% c("0"), "1. Never", 
+                          ifelse(dati$Family_Time_Stressful %in% c("1", "2"), "2. Rarely",
+                          ifelse(dati$Family_Time_Stressful %in% c("3"), "3. Neutral",
+                          ifelse(dati$Family_Time_Stressful %in% c("4", "5"), "4. Often",
+                          ifelse(dati$Family_Time_Stressful %in% c("6"), "5. All of the time",
+                          NA_character_ )))))
+```
+Ricodifica variabile *Life Satisfaction*
+```{r}
+dati$Life_Satisfaction <- ifelse(dati$Life_Satisfaction %in% c("0", "1", "2"), "1. Extremely dissatisfied", 
+                  ifelse(dati$Life_Satisfaction %in% c("3", "4"), "2. Not Satisfied",
+                  ifelse(dati$Life_Satisfaction %in% c("5", "6"), "3. Neutral",
+                  ifelse(dati$Life_Satisfaction %in% c("7", "8"), "4. Satisfied",
+                  ifelse(dati$Life_Satisfaction %in% c("9", "10"), "5. Extremely satisfied",
+                   NA_character_ )))))
+```
+Ricodifica variabile *Friends Importance*
+```{r}
+dati$Friends_Importance <- ifelse(dati$Friends_Importance %in% c("0", "1", "2"), "1. Very Unimportant", 
+                          ifelse(dati$Friends_Importance %in% c("3", "4"), "2. Unimportant",
+                          ifelse(dati$Friends_Importance %in% c("5", "6"), "3. Neutral",
+                          ifelse(dati$Friends_Importance %in% c("7", "8"), "4. Important",
+                          ifelse(dati$Friends_Importance %in% c("9", "10"), "5. Very Important",
+                          NA_character_ )))))
+```
+Ricodifica variabile *Leisure Time Importance*
+```{r}
+dati$Leisure_Time_Importance <- ifelse(dati$Leisure_Time_Importance %in% c("0", "1", "2"), "1. Very Unimportant", 
+                          ifelse(dati$Leisure_Time_Importance %in% c("3", "4"), "2. Unimportant",
+                          ifelse(dati$Leisure_Time_Importance %in% c("5", "6"), "3. Neutral",
+                          ifelse(dati$Leisure_Time_Importance %in% c("7", "8"), "4. Important",
+                          ifelse(dati$Leisure_Time_Importance %in% c("9", "10"), "5. Very Important",
+                          NA_character_ )))))
+```
+Ricodifica variabile *Politics Importance*
+```{r}
+dati$Politics_Importance <- ifelse(dati$Politics_Importance %in% c("0", "1", "2"), "1. Very Unimportant", 
+                          ifelse(dati$Politics_Importance %in% c("3", "4"), "2. Unimportant",
+                          ifelse(dati$Politics_Importance %in% c("5", "6"), "3. Neutral",
+                          ifelse(dati$Politics_Importance %in% c("7", "8"), "4. Important",
+                          ifelse(dati$Politics_Importance %in% c("9", "10"), "5. Very Important",
+                          NA_character_ )))))
+```
+Ricodifica variabile *Religion Importance*
+```{r}
+dati$Religion_Importance <- ifelse(dati$Religion_Importance %in% c("0", "1", "2"), "1. Very Unimportant", 
+                          ifelse(dati$Religion_Importance %in% c("3", "4"), "2. Unimportant",
+                          ifelse(dati$Religion_Importance %in% c("5", "6"), "3. Neutral",
+                          ifelse(dati$Religion_Importance %in% c("7", "8"), "4. Important",
+                          ifelse(dati$Religion_Importance %in% c("9", "10"), "5. Very Important",
+                          NA_character_ )))))
+```
+Ricodifica variabile *Volunteering Importance*
+```{r}
+dati$Volunteering_Importance <- ifelse(dati$Volunteering_Importance %in% c("0", "1", "2"), "1. Very Unimportant", 
+                          ifelse(dati$Volunteering_Importance %in% c("3", "4"), "2. Unimportant",
+                          ifelse(dati$Volunteering_Importance %in% c("5", "6"), "3. Neutral",
+                          ifelse(dati$Volunteering_Importance %in% c("7", "8"), "4. Important",
+                          ifelse(dati$Volunteering_Importance %in% c("9", "10"), "5. Very Important",
+                          NA_character_ )))))
+```
+Ricodifica variabile *Work Importance*
+```{r}
+dati$Work_Importance <- ifelse(dati$Work_Importance %in% c("0", "1", "2"), "1. Very Unimportant", 
+                          ifelse(dati$Work_Importance %in% c("3", "4"), "2. Unimportant",
+                          ifelse(dati$Work_Importance %in% c("5", "6"), "3. Neutral",
+                          ifelse(dati$Work_Importance %in% c("7", "8"), "4. Important",
+                          ifelse(dati$Work_Importance %in% c("9", "10"), "5. Very Important",
+                          NA_character_ )))))
+```
+Ricodifica variabile *Happiness*
+```{r}
+dati$Happiness <- ifelse(dati$Happiness %in% c("0", "1", "2"), "1. Very Unhappy", 
+                  ifelse(dati$Happiness %in% c("3", "4"), "2. Unhappy",
+                  ifelse(dati$Happiness %in% c("5", "6"), "3. Neutral",
+                  ifelse(dati$Happiness %in% c("7", "8"), "4. Happy",
+                  ifelse(dati$Happiness %in% c("9", "10"), "5. Very Happy",
+                   NA_character_ )))))
+```
+
+
+## Statistiche Descrittive 
+
+### **Distribuzione** delle variabili
+> Mostrare la distribuzione delle variabili utilizzando metriche di sintesi e grafici.
+
+Distribuzione della variabile *Life Satisfaction*
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+
+# Calculate the count of each category
+count_data <- table(dati$Life_Satisfaction)
+
+# Create the bar plot
+p <- ggplot(data.frame(Category = names(count_data), Count = as.numeric(count_data)), aes(x = reorder(Category, -Count), y = Count)) +
+  geom_bar(stat = "identity", fill = "darkseagreen") +
+  labs(
+    x = "Valori",
+    y = "Conteggio",
+    title = "Distribuzione dei valori di Life Satisfaction"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Print the bar plot
+print(p)
+
+```
+
+Distribuzione della variabile *Family Main Priority Life*
+```{r}
+library(ggplot2)
+
+# Calculate the count of each category
+count_data <- table(dati$Family_Main_Priority_Life)
+
+# Create the bar plot
+p <- ggplot(data.frame(Category = names(count_data), Count = as.numeric(count_data)), aes(x = reorder(Category, -Count), y = Count)) +
+  geom_bar(stat = "identity", fill = "gold3") +
+  labs(
+    x = "Valori",
+    y = "Conteggio",
+    title = "Distribuzione dei valori di Family Main Priority Life"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Print the bar plot
+print(p)
+```
+
+Distribuzione delle variabili *Family Time*: Enjoyable e Stressful
+```{r}
+# Count the occurrences of each value
+freq_table_prop <- round(prop.table(table(dati$Family_Time_Enjoyable)), 2) * 100
+
+# Create the bar plot
+barplot(freq_table_prop, main = "Conteggio % di Family Time Enjoyable",
+        xlab = "Valore", ylab = "Conteggio (%)", col = "skyblue")
+
+```
+
+```{r message=FALSE, warning=FALSE}
+
+# Count the occurrences of each value
+freq_table_prop <- round(prop.table(table(dati$Family_Time_Stressful)), 2) * 100
+
+# Create the bar plot
+barplot(freq_table_prop, main = "Conteggio % di Family Time Stressful",
+        xlab = "Valore", ylab = "Conteggio (%)", col = "firebrick")
+
+
+```
+
+
+Distribuzione delle variabili *Family Time*: Enjoyable e Stressful, per Country
+```{r}
+library(data.table)
+
+df <- dati_raw
+
+
+# Filter out rows with null or empty values in Family_Time_Enjoyable and Family_Time_Stressful
+df_filtered <- df[complete.cases(df$Family_Time_Enjoyable, df$Family_Time_Stressful) & 
+                    df$Family_Time_Enjoyable != "" & df$Family_Time_Stressful != "", ]
+
+# Define values to be excluded
+exclude_values <- c(55, 77, 88, 99)
+
+# Exclude rows with values in Family_Time_Enjoyable column
+df_filtered <- df_filtered[!Family_Time_Enjoyable %in% exclude_values]
+
+# Calculate the mean of Family_Time_Enjoyable and Family_Time_Stressful by Country
+df_mean <- df_filtered[
+  , .(Mean_Enjoyable = mean(Family_Time_Enjoyable), Mean_Stressful = mean(Family_Time_Stressful)),
+  by = Country
+]
+
+# Create the interactive bar-in-bar chart
+p <- ggplot(df_mean, aes(x = Country)) +
+  geom_bar(aes(y = Mean_Enjoyable, fill = "Enjoyable"), stat = "identity", width = 0.4) +
+  geom_bar(aes(y = Mean_Stressful, fill = "Stressful"), stat = "identity", width = 0.4, alpha = 0.6) +
+  scale_fill_manual(values = c(Enjoyable = "steelblue", Stressful = "red"),
+                    guide = guide_legend(title = "Family Time")) +
+  labs(
+    x = "Country",
+    y = "Mean of Family Time",
+    title = "Mean of Enjoyable and Stressful Family Time by Country"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# Print the chart
+print(p)
+```
+
+
+
+
+
+Distribuzione Variabili Sociali
+```{r}
+# Define new variable names
+variable_names <- c("Family", "Religion", "Work", "Volunteering", "Politics", "Friends")
+
+# Calculate variable means
+variable_mean <- colMeans(dati_raw[, c("Family_Importance", "Religion_Importance", "Work_Importance", "Volunteering_Importance", "Politics_Importance", "Friends_Importance")], na.rm = TRUE)
+
+# Barplot of variable means with modified names
+barplot(variable_mean,
+        main = "Social Variables Importance",
+        xlab = "Variables",
+        ylab = "Mean",
+        col = c("darkseagreen", "gold3", "skyblue", "salmon", "purple", "orange"),
+        cex.lab = 0.8,
+        beside = TRUE,
+        names.arg = variable_names)  # Set the modified variable names
+```
+
+
+
+## Test delle Ipotesi 
+### 1. Definizione della variabile **dipendente** e **indipendente**
+
+Variabile dipendente: Happiness, Life Satisfaction <br>
+Variabili indipendenti: gender, country, Family_Main_Priority
+
+**Obiettivo**: Vogliamo analizzare se esiste una dipendenza tra il benessere di una persona (inteso come Happiness e Life Satisfaction) rispetto all'importanza che dà alla famiglia.
+
+### 2. Analisi statistiche
+
+Tabella di Contingenza tra *Family Main Priority in Life* e *Happiness*
+```{r}
+# Tabella di contingenza
+# con le percentuali, round a due decimali
+FamilyMainPriority_Happiness <- round( prop.table( 
+                        table(dati$Family_Main_Priority_Life, dati$Happiness, useNA = "no")), 
+                      digits=4)*100
+
+FamilyMainPriority_Happiness
+
+#paste("Numero di Osservazioni: ", nrow(dati))
+
+# Grafico di Correlazione
+library("pheatmap")
+pheatmap(as.matrix(FamilyMainPriority_Happiness))
+
+```
+
+Correlazione tra *Family Main Priority in Life* e *Happiness*, analisi per Country, soglia variabile (ex.30%)
+```{r}
+# Supponiamo che il tuo dataset si chiami "data" e la colonna del paese si chiami "Country"
+
+# Ottenere la lista dei paesi unici
+paesi <- unique(dati$Country)
+
+# Definire una funzione per trovare i massimi e controllare il 50%
+trova_massimi <- function(paese) {
+  # Selezionare i dati solo per il paese corrente
+  dati_paese <- subset(dati, Country == paese)
+  
+  # Creare la tabella di contingenza per il paese corrente
+  tabella <- table(dati_paese$Happiness, dati_paese$Family_Main_Priority_Life)
+  
+  # Controllare se la tabella di contingenza è vuota
+  if (length(tabella) == 0) {
+    return(NULL)  # Restituire NULL se la tabella è vuota
+  }
+  #Trovare il massimo valore nella tabella di contingenza
+  #massimo <- ifelse(length(tabella) > 0, max(tabella), 0)
+  
+  # Trovare il massimo valore nella tabella di contingenza
+  massimo <- max(tabella, na.rm =TRUE)
+  
+  # Calcolare la proporzione del massimo rispetto al totale
+  proporzione <- massimo / sum(tabella)
+  
+  # Controllare se la proporzione supera la soglia
+  if (proporzione > 0.30) {
+    return(paese)  # Restituire il nome del paese se il massimo supera il 50%
+  } else {
+    return(NULL)  # Restituire NULL altrimenti
+  }
+}
+
+# lapply per applicare la funzione a ciascun paese
+paesi_contingency_soglia <- lapply(paesi, trova_massimi)
+
+# Filtrare eventuali valori NULL dalla lista risultante
+paesi_contingency_soglia <- paesi_contingency_soglia[!sapply(paesi_contingency_soglia, is.null)]
+
+# Visualizzare i paesi con correlazione superiore alla soglia
+print(paesi_contingency_soglia)
+
+```
+
+Test chi2
+```{r message=FALSE, warning=FALSE}
+chi2 <- chisq.test(FamilyMainPriority_Happiness)
+print(chi2)
+
+#l’associazione tra le due variabili nella tabella di contingenza può essere attribuita al caso; 
+# un valore di p-value superiore a 0.05 indica che la relazione non è statisticamente significativa e dunque non si può respingere l’ipotesi nulla, per cui si conclude che le due variabili sono statisticamente indipendenti
+```
+
+V di Cramer
+```{r}
+#install.packages("rcompanion")
+#lanciamo
+library(rcompanion)
+
+#Calcoliamo la V di Cramer
+cramerV(FamilyMainPriority_Happiness)
+# associazione debole
+```
+
+Tabella di Contingenza tra *Family Main Priority in Life* e *Life Satisfaction*
+```{r}
+# Tabella di contingenza
+# con le percentuali, round a due decimali
+Family_LifeSatisfaction <- round( prop.table( 
+                        table(dati$Family_Main_Priority_Life, dati$Life_Satisfaction, useNA = "no")), 
+                      digits=4)*100
+
+Family_LifeSatisfaction
+
+# Grafico di Correlazione
+library("pheatmap")
+pheatmap(as.matrix(Family_LifeSatisfaction))
+
+```
+
+Test chi2
+```{r message=FALSE, warning=FALSE}
+chi2 <- chisq.test(Family_LifeSatisfaction)
+print(chi2)
+#l’associazione tra le due variabili nella tabella di contingenza può essere attribuita al caso; 
+# un valore di p-value superiore a 0.05 indica che la relazione non è statisticamente significativa e dunque non si può respingere l’ipotesi nulla, per cui si conclude che le due variabili sono statisticamente indipendenti
+```
+
+V di Cramer
+```{r}
+#install.packages("rcompanion")
+#lanciamo
+library(rcompanion)
+
+#Calcoliamo la V di Cramer
+cramerV(Family_LifeSatisfaction)
+# associazione debole
+```
+
+
+
+## Conclusioni
+1. Quali sono i principali risultati dell’analisi?
+2. Di quali limiti si caratterizza l’analisi? periodo temporale e missing values!
+3. Quali ulteriori analisi potrebbero essere svolte?
+
+
+### 1. Quali sono i principali risultati dell’analisi?
+
+L'ipotesi inziale che la famiglia abbia un impatto sul benessere di una persona è stata confutata.
+
+* La relazione tra l'importanza della famiglia e la felicità non ha mostrato significatività statistica, con un p-value = 1 (>> 0.05) e una V di Cramer molto bassa di 0.048.
+
+* La relazione tra l'importanza della famiglia e la soddifazione nella vita è anch'essa poco rilevante con un p-value = 1 e una V di Cramer di 0.0418.
+
+In conclusione possiamo dire che non c'è una relazione che leghi la famiglia al benessere e alla felicità di una persona. Tuttavia la nostra analisi presenta alcuni limiti.
+
+### 2. Di quali limiti si caratterizza l’analisi?
+
+Purtroppo, il nostro dataset era limitato a un solo anno, il 2018. Pertanto, non siamo stati in grado di analizzare i cambiamenti nel tempo, come ad esempio il miglioramento o il peggioramento dell'importanza della famiglia nel corso degli anni. Inoltre, molte delle variabili selezionate presentavano valori mancanti. 
+
+### 3. Quali ulteriori analisi potrebbero essere svolte?
+
+Ulteriori analisi che avremmo potuto condurre sui dati includono l'importanza dei figli e il loro impatto sulla felicità individuale, nonché l'esplorazione della relazione tra il tempo trascorso al lavoro e la felicità personale e della famiglia. 
+In aggiunta a ciò un'interessante analisi potrebbe essere fatta sui dati post-pandemia per rivelare eventuali cambiamenti.
