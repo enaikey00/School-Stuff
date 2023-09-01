@@ -22,6 +22,8 @@ The exam involved developing a Python program with the following features:
 
 In my case, I enjoyed analyzing space launch data from [Wikipedia](https://en.wikipedia.org/wiki/Timeline_of_spaceflight).
 
+<img width="992" alt="Screenshot 2" src="https://github.com/enaikey00/School-Stuff/assets/64537810/dd661c02-df52-44c6-84d3-4ad634d1b8c5">
+
 - - - -
 ## ⚙️ Features
 In detail, the program allows you to choose a year from 1951 to the present and view some statistics:
