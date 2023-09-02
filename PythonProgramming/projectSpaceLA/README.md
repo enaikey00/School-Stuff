@@ -12,7 +12,7 @@
 
 - - - -
 ## 💡 Overview
-The SpaceLA Project, where LA stands for SpaceLaunches, was my final exam for the Python Programming course while attending the ML & AI course at VET Angelo Rizzoli.
+The SpaceLA Project, where LA stands for SpaceLaunches, was my final exam for the _Python Programming_ class while attending the ML & AI course at VET Angelo Rizzoli.
 
 The exam involved developing a Python program with the following features:
 
