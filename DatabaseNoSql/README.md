@@ -13,6 +13,7 @@ The noSQL Database class covered MongoDB, Redis and Neo4j. Each of them had thei
 
 The projects are available at their own repository.
 
+---
 ## MongoDB
 [Concerti-MongoDB](https://github.com/ItsAtlant/Concerti-Mongodb)
 This project simulates the buying/selling activity for a concert. In particular the user can 
