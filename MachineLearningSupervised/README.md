@@ -7,8 +7,8 @@
 ---
 #  💡 Overview 
 Spotify Regression was the final exam of the _Machine Learning Supervised_ class. It was done 
-as a group project with these other amazing people and coders: Matteo Civita alias @Chovo02, 
-Mattia Rossini alias @MadMatt00, Davide Soltys alias @ItsAtlant, and Luca Pugno.
+as a group project with these other amazing people and coders: Matteo Civita alias [@Chovo02](https://github.com/Chovo02), 
+Mattia Rossini alias [@MadMatt00](https://github.com/MadMatt00), Davide Soltys alias [@ItsAtlant](https://github.com/ItsAtlant), and Luca Pugno.
 
 The main goal was to predict the popularity of a given song.
 The dataset containing the songs information was downloaded through Spotify API.
