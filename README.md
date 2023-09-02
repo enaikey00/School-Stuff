@@ -57,6 +57,7 @@ It includes work from different classes:
 
 ## :gear: Technologies
 
-Python, Pandas, Numpy
-SciKit Learn
-Tableau
+* Python, R
+* Pandas, Numpy
+* SciKit Learn
+* Tableau
