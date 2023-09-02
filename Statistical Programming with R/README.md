@@ -9,7 +9,7 @@
 
 ---
 ## 💡 Overview 
-The work in question was my final exam for the /Statistical Programming with R/ course while attending the ML & AI course at ITS Angelo Rizzoli. Note: It was done as a group project.
+The work in question was my final exam for the _Statistical Programming with R_ class while attending the ML & AI course at ITS Angelo Rizzoli. Note: It was done as a group project.
 
 The exam consisted of a data analysis project based on the European Social Survey dataset ([Codebook](file:///Users/miniops/Downloads/ESS-Data-Wizard-subset-2023-05-07%20codebook.html)). Specifically, the task involved selecting a research question, choosing relevant variables, analyzing the data to answer the question (using statistical methods and the R language).
 
@@ -19,7 +19,7 @@ The exam consisted of a data analysis project based on the European Social Surve
 
 ---
 ## ⚙️ Features
-The project revolves around the question: “/Is having a family important in order to achieve happiness?”/
+The project revolves around the question: _“Is having a family important in order to achieve happiness?”_
 
 The hypotheses:
 * The importance of family is correlated with happiness.
