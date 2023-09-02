@@ -9,7 +9,7 @@
 
 ---
 ##  💡 Overview 
-The noSQL Database class covered MongoDB, Redis and Neo4j. Each of them had their own project, which contributed to the final grade.
+The _noSQL Database_ class covered MongoDB, Redis and Neo4j. Each of them had their own project, which contributed to the final grade.
 
 The projects are available at their own repository.
 
