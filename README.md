@@ -56,3 +56,7 @@ It includes work from different classes:
 * Design Thinking
 
 ## :gear: Technologies
+
+Python, Pandas, Numpy
+SciKit Learn
+Tableau
