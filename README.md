@@ -47,12 +47,13 @@
 This repository aims to keep track of school-related projects.
 
 ## :bulb: About
-It includes work from different classes: 
+It includes work from different classes:
+* Machine Learning Supervised
+* Deep Learning
 * Python Programming
 * noSQL Database (Redis, Mongodb, Neo4j)
 * AioT
 * Data Vizualization
-* Machine Learning Supervised
 * Design Thinking
 
 ## :gear: Technologies
